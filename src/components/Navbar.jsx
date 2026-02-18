@@ -1,61 +1,68 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const links = ["Home", "Teams", "Schedule", "Stats"];
+  const navLinks = ["Home", "About", "Features", "Contact"];
 
   return (
-    <nav className="bg-[#FF4500] text-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="text-2xl font-extrabold tracking-tight">
-            Running App
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <span className="text-xl font-bold text-blue-600">RunningApp</span>
           </div>
-
-          {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-6 text-lg font-medium">
-            {links.map((link) => (
-              <li key={link}>
-                <a
-                  href="#"
-                  className="px-3 py-2 rounded-md hover:bg-white/20 transition-colors"
-                >
-                  {link}
-                </a>
-              </li>
+          <div className="hidden md:flex space-x-6 items-center">
+            {navLinks.map((link) => (
+              <a
+                key={link}
+                href="#"
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
+                {link}
+              </a>
             ))}
-          </ul>
-
-          {/* Mobile Hamburger */}
-          <div className="md:hidden">
+            <button className="ml-4 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+              Sign In
+            </button>
+          </div>
+          <div className="md:hidden flex items-center">
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-3xl focus:outline-none hover:text-orange-200 transition-colors"
+              onClick={() => setOpen(!open)}
+              className="text-gray-700 focus:outline-none"
             >
-              {menuOpen ? "✕" : "☰"}
+              {open ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+              )}
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <ul className="md:hidden mt-2 bg-[#FF4500] rounded-lg shadow-lg py-2 space-y-2">
-            {links.map((link) => (
-              <li key={link}>
-                <a
-                  href="#"
-                  className="block px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
+
+      {open && (
+        <div className="md:hidden bg-white shadow-md">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {navLinks.map((link) => (
+              <a
+                key={link}
+                href="#"
+                className="block text-gray-700 hover:text-blue-600 px-3 py-2 rounded font-medium transition-colors"
+              >
+                {link}
+              </a>
+            ))}
+            <button className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+              Sign In
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
