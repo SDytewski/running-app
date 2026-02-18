@@ -1,19 +1,17 @@
-import './index.css'
-import './globals.css'
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import CardSection from './components/CardSection'
-import CTASection from './components/CTASection'
-import Footer from './components/Footer'
+import Navbar from "./components/Navbar";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
-      {/* <Hero />
-      <CardSection />
-      <CTASection />
-      <Footer /> */}
+      <main className="p-8">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Welcome to Running App
+        </h1>
+        <p className="mt-4 text-gray-600">
+          Your modern sports tracking app.
+        </p>
+      </main>
     </div>
-  )
+  );
 }
