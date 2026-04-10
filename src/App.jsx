@@ -1,5 +1,6 @@
 
 import Navbar from "./components/Navbar";
+import Features from "./components/Features";
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
           This is a modern Tailwind-styled React app.
         </p>
       </main>
+      <Features />
     </div>
   );
 }
