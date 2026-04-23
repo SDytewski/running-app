@@ -1,75 +1,63 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
-const emptyForm = {
-  runnerName: "",
-  runDate: "",
-  title: "",
-  distanceMiles: "",
-  notes: "",
-};
-
 export default function Features() {
+  const [runnerName, setRunnerName] = useState("");
+  const [runDate, setRunDate] = useState("");
+  const [title, setTitle] = useState("");
+  const [distanceMiles, setDistanceMiles] = useState("");
+  const [notes, setNotes] = useState("");
+
   const [runs, setRuns] = useState([]);
-  const [form, setForm] = useState(emptyForm);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetchRuns();
+    getRuns();
   }, []);
 
-  async function fetchRuns() {
-    const { data, error } = await supabase
+  async function getRuns() {
+    const result = await supabase
       .from("runs")
       .select("*")
       .order("run_date", { ascending: false })
       .order("created_at", { ascending: false });
 
-    if (error) {
-      setErrorMessage(error.message);
+    if (result.error) {
+      setMessage("Could not load runs.");
       return;
     }
 
-    setRuns(data);
+    setRuns(result.data || []);
   }
 
-  function handleChange(event) {
-    const { name, value } = event.target;
-
-    setForm((currentForm) => ({
-      ...currentForm,
-      [name]: value,
-    }));
-  }
-
-  async function handleSubmit(event) {
+  async function saveRun(event) {
     event.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-    setIsSubmitting(true);
+    setMessage("");
 
-    const { error } = await supabase.from("runs").insert([
+    const result = await supabase.from("runs").insert([
       {
-        runner_name: form.runnerName.trim(),
-        run_date: form.runDate || null,
-        title: form.title.trim(),
-        distance_miles: Number(form.distanceMiles),
-        notes: form.notes.trim(),
+        runner_name: runnerName.trim(),
+        run_date: runDate,
+        title: title.trim(),
+        distance_miles: Number(distanceMiles),
+        notes: notes.trim(),
       },
     ]);
 
-    if (error) {
-      setErrorMessage(error.message);
-      setIsSubmitting(false);
+    if (result.error) {
+      setMessage("Could not save run.");
       return;
     }
 
-    setForm(emptyForm);
-    setSuccessMessage("Run saved.");
-    await fetchRuns();
-    setIsSubmitting(false);
+    setMessage("Run saved!");
+
+    setRunnerName("");
+    setRunDate("");
+    setTitle("");
+    setDistanceMiles("");
+    setNotes("");
+
+    getRuns();
   }
 
   return (
@@ -77,22 +65,17 @@ export default function Features() {
       <h2 className="text-2xl font-bold text-gray-800">Features</h2>
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={saveRun}
         className="mt-6 space-y-4 rounded-xl border bg-white p-6 shadow-sm"
       >
         <div>
-          <label
-            htmlFor="runnerName"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label className="block text-sm font-medium text-gray-700">
             Runner name
           </label>
           <input
-            id="runnerName"
-            name="runnerName"
             type="text"
-            value={form.runnerName}
-            onChange={handleChange}
+            value={runnerName}
+            onChange={(event) => setRunnerName(event.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             placeholder="Jordan"
             required
@@ -100,36 +83,26 @@ export default function Features() {
         </div>
 
         <div>
-          <label
-            htmlFor="runDate"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label className="block text-sm font-medium text-gray-700">
             Run date
           </label>
           <input
-            id="runDate"
-            name="runDate"
             type="date"
-            value={form.runDate}
-            onChange={handleChange}
+            value={runDate}
+            onChange={(event) => setRunDate(event.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             required
           />
         </div>
 
         <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label className="block text-sm font-medium text-gray-700">
             Title
           </label>
           <input
-            id="title"
-            name="title"
             type="text"
-            value={form.title}
-            onChange={handleChange}
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             placeholder="Morning Run"
             required
@@ -137,38 +110,28 @@ export default function Features() {
         </div>
 
         <div>
-          <label
-            htmlFor="distanceMiles"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label className="block text-sm font-medium text-gray-700">
             Distance (miles)
           </label>
           <input
-            id="distanceMiles"
-            name="distanceMiles"
             type="number"
-            step="0.01"
-            min="0"
-            value={form.distanceMiles}
-            onChange={handleChange}
+            value={distanceMiles}
+            onChange={(event) => setDistanceMiles(event.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             placeholder="3.50"
+            step="0.01"
+            min="0"
             required
           />
         </div>
 
         <div>
-          <label
-            htmlFor="notes"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label className="block text-sm font-medium text-gray-700">
             Notes
           </label>
           <textarea
-            id="notes"
-            name="notes"
-            value={form.notes}
-            onChange={handleChange}
+            value={notes}
+            onChange={(event) => setNotes(event.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             placeholder="Easy pace around the neighborhood."
             rows="4"
@@ -177,42 +140,33 @@ export default function Features() {
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
         >
-          {isSubmitting ? "Saving..." : "Save run"}
+          Save run
         </button>
       </form>
 
-      {errorMessage && (
-        <p className="mt-4 text-red-600">{errorMessage}</p>
-      )}
+      {message && <p className="mt-4 text-green-600">{message}</p>}
 
-      {successMessage && (
-        <p className="mt-4 text-green-600">{successMessage}</p>
-      )}
-
-      {!errorMessage && (
-        <div className="mt-6 space-y-3">
-          {runs.length === 0 ? (
-            <p className="text-gray-600">No runs yet.</p>
-          ) : (
-            runs.map((run) => (
-              <div key={run.id} className="rounded border bg-white p-4 shadow-sm">
-                <h3 className="font-semibold text-gray-800">{run.title}</h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  {run.runner_name || "Unknown runner"}
-                  {run.run_date ? ` on ${run.run_date}` : ""}
-                </p>
-                <p className="text-gray-600">{run.distance_miles} miles</p>
-                {run.notes && (
-                  <p className="mt-2 text-sm text-gray-500">{run.notes}</p>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-      )}
+      <div className="mt-6 space-y-3">
+        {runs.length === 0 ? (
+          <p className="text-gray-600">No runs yet.</p>
+        ) : (
+          runs.map((run) => (
+            <div key={run.id} className="rounded border bg-white p-4 shadow-sm">
+              <h3 className="font-semibold text-gray-800">{run.title}</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                {run.runner_name || "Unknown runner"}
+                {run.run_date ? ` on ${run.run_date}` : ""}
+              </p>
+              <p className="text-gray-600">{run.distance_miles} miles</p>
+              {run.notes && (
+                <p className="mt-2 text-sm text-gray-500">{run.notes}</p>
+              )}
+            </div>
+          ))
+        )}
+      </div>
     </section>
   );
 }
