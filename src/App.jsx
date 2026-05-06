@@ -2,10 +2,10 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Features from "./components/Features";
-import Signin from "./components/Signin";
+// import Signin from "./components/Signin";
 
 export default function App() {
-  const [showSignIn, setShowSignIn] = useState(false);
+  // const [showSignIn, setShowSignIn] = useState(false);
   return (
     <div className="bg-gray-50 min-h-screen">
       <Navbar />
