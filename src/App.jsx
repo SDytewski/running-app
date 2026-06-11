@@ -12,7 +12,7 @@ export default function App() {
       <main className="p-8">
         <h1 className="text-3xl font-bold text-gray-800">Welcome to Running App</h1>
         <p className="mt-4 text-gray-600">
-          This is a modern Tailwind-styled React app.
+          Enter running data
         </p>
       </main>
       <Features />
