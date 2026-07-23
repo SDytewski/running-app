@@ -10,7 +10,7 @@ export default function Features() {
 
   const [runs, setRuns] = useState([]);
   const [message, setMessage] = useState("");
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(2);
 
   useEffect(() => {
     getRuns();
@@ -65,8 +65,8 @@ export default function Features() {
     <section id="features" className="min-h-screen p-8">
       <h2 className="text-2xl font-bold text-gray-800">Features</h2>
       <h1>Count: {count}</h1>
-      <button onClick={()=> setCount(count+2)}>Increment</button>
-      <button onClick={()=> setCount(count-2)}>Decrement</button>
+      <button onClick={()=> setCount(count+1)}>Increment</button>
+      <button onClick={()=> setCount(count-1)}>Decrement</button>
 
       <form
         onSubmit={saveRun}
